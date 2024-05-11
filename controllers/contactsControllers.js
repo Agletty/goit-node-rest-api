@@ -40,7 +40,7 @@ export const createContact = async (req, res, next) => {
   try {
     const { name, email, phone } = req.body;
 
-    const result = await contactsServices.addContact(name, email, phone);
+    const result = await contactsService.addContact(name, email, phone);
     res.status(201).json(result);
   } catch (error) {
     next(error);
@@ -49,6 +49,9 @@ export const createContact = async (req, res, next) => {
 
 export const updateContact = async (req, res, next) => {
   try {
+    if (!req.body || Object.keys(req.body).length === 0) {
+      throw HttpError(400, "Body must have at least one field");
+    }
     const { id } = req.params;
     const result = await contactsService.updateContact(id, req.body);
 
@@ -56,9 +59,6 @@ export const updateContact = async (req, res, next) => {
       throw HttpError(404, "Not found");
     }
 
-    if (!req.body || Object.keys(req.body).length === 0) {
-      throw HttpError(400, "Body must have at least one field");
-    }
     res.json(result);
   } catch (error) {
     next(error);
