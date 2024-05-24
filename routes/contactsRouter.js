@@ -14,25 +14,33 @@ import {
   updateContactSchema,
   updateFavoriteSchema,
 } from "../schemas/contactsSchemas.js";
+import { authenticate } from "../middlewares/authenticate.js";
 
 const contactsRouter = express.Router();
 
-contactsRouter.get("/", getAllContacts);
+contactsRouter.get("/", authenticate, getAllContacts);
 
-contactsRouter.get("/:id", validateObjectId, getOneContact);
+contactsRouter.get("/:id", authenticate, validateObjectId, getOneContact);
 
-contactsRouter.delete("/:id", validateObjectId, deleteContact);
+contactsRouter.delete("/:id", authenticate, validateObjectId, deleteContact);
 
-contactsRouter.post("/", validateBody(createContactSchema), createContact);
+contactsRouter.post(
+  "/",
+  authenticate,
+  validateBody(createContactSchema),
+  createContact
+);
 
 contactsRouter.put(
   "/:id",
+  authenticate,
   validateObjectId,
   validateBody(updateContactSchema),
   updateContact
 );
 contactsRouter.patch(
   "/:id/favorite",
+  authenticate,
   validateObjectId,
   validateBody(updateFavoriteSchema),
   updateStatusContact
