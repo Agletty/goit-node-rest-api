@@ -16,7 +16,7 @@ export const register = async (req, res, next) => {
     const hashPassword = await bcrypt.hash(password, 10);
 
     const newUser = await User.create({
-      ...req.body,
+      email,
       password: hashPassword,
     });
 
@@ -73,7 +73,7 @@ export const logout = async (req, res, next) => {
     next(error);
   }
 };
-export const getCurrent = async (req, res) => {
+export const getCurrent = async (req, res, next) => {
   try {
     const { email, subscription } = req.user;
 

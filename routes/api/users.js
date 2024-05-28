@@ -5,12 +5,12 @@ import { login, register, logout, getCurrent } from "../../controllers/auth.js";
 
 import { authenticate } from "../../middlewares/authenticate.js";
 
-const authRouter = express.Router();
+const usersRouter = express.Router();
 
-authRouter.post("/register", validateBody(registerSchema), register);
-authRouter.post("/login", validateBody(loginSchema), login);
-authRouter.post("/logout", authenticate, logout);
+usersRouter.post("/register", validateBody(registerSchema), register);
+usersRouter.post("/login", validateBody(loginSchema), login);
+usersRouter.post("/logout", authenticate, logout);
 
-authRouter.get("/current", authenticate, getCurrent);
+usersRouter.get("/current", authenticate, getCurrent);
 
-export default authRouter;
+export default usersRouter;
