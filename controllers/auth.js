@@ -106,7 +106,7 @@ export const updateAvatar = async (req, res, next) => {
     await image.resize(250, 250).writeAsync(resultUpload);
 
     await fs.rename(tempUpload, resultUpload);
-    
+
     const avatarURL = path.posix.join("avatars", fileName);
 
     await User.findByIdAndUpdate(_id, { avatarURL });
@@ -118,53 +118,3 @@ export const updateAvatar = async (req, res, next) => {
     next(error);
   }
 };
-
-// export const updateAvatar = async (req, res, next) => {
-//   try {
-//     if (!req.file) {
-//       return next(HttpError(400, "File not found"));
-//     }
-
-//     const { _id } = req.user;
-//     const { path: tempUpload, originalname } = req.file;
-//     const fileName = `${_id}_${originalname}`;
-//     const resultUpload = path.resolve("public", "avatars", fileName);
-
-//     // Перевірка існування папки, якщо ні — створення
-//     await fs.mkdir(path.resolve("public", "avatars"), { recursive: true });
-
-//     // Обробка зображення до розміру 250x250
-//     try {
-//       const image = await jimp.read(tempUpload);
-//       await image.resize(250, 250).writeAsync(resultUpload);
-//       console.log("Image processed and resized");
-//     } catch (imageError) {
-//       throw next(HttpError(500, "Image processing error"));
-//     }
-
-//     // Переміщення обробленого зображення в папку "public/avatars"
-//     try {
-//       await fs.rename(tempUpload, resultUpload);
-//       console.log("Image moved to destination folder");
-//     } catch (renameError) {
-//       throw next(HttpError(500, "File rename error"));
-//     }
-
-//     // Використовуємо path.posix.join для правильного формування URL
-//     const avatarURL = path.posix.join("avatars", fileName);
-
-//     // Оновлення URL аватара користувача в базі даних
-//     try {
-//       await User.findByIdAndUpdate(_id, { avatarURL });
-//       console.log("User avatar URL updated in database");
-//     } catch (dbError) {
-//       throw next(HttpError(500, "Database update error"));
-//     }
-
-//     res.json({
-//       avatarURL,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
