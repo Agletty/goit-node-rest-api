@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import * as fs from "node:fs/promises";
+import fs from "node:fs/promises";
 import path from "node:path";
 import jwt from "jsonwebtoken";
 import gravater from "gravatar";
@@ -103,7 +103,7 @@ export const updateAvatar = async (req, res, next) => {
     const resultUpload = path.resolve("public", "avatars", fileName);
 
     const image = await jimp.read(tempUpload);
-    await image.resize(250, 250).writeAsync(resultUpload);
+    await image.resize(250, 250).writeAsync(tempUpload);
 
     await fs.rename(tempUpload, resultUpload);
 
