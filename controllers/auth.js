@@ -1,5 +1,9 @@
 import bcrypt from "bcrypt";
+import fs from "node:fs/promises";
+import path from "node:path";
 import jwt from "jsonwebtoken";
+import gravater from "gravatar";
+import jimp from "jimp";
 
 import { User } from "../models/user.js";
 import HttpError from "../helpers/HttpError.js";
@@ -14,10 +18,12 @@ export const register = async (req, res, next) => {
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
+    const avatarURL = gravater.url(email);
 
     const newUser = await User.create({
       email,
       password: hashPassword,
+      avatarURL,
     });
 
     res.status(201).json({
@@ -80,6 +86,33 @@ export const getCurrent = async (req, res, next) => {
     res.json({
       email,
       subscription,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateAvatar = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      throw next(HttpError(400, "File not found"));
+    }
+    const { _id } = req.user;
+    const { path: tempUpload, originalname } = req.file;
+    const fileName = `${_id}_${originalname}`;
+    const resultUpload = path.resolve("public", "avatars", fileName);
+
+    const image = await jimp.read(tempUpload);
+    await image.resize(250, 250).writeAsync(tempUpload);
+
+    await fs.rename(tempUpload, resultUpload);
+
+    const avatarURL = path.posix.join("avatars", fileName);
+
+    await User.findByIdAndUpdate(_id, { avatarURL });
+
+    res.json({
+      avatarURL,
     });
   } catch (error) {
     next(error);

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Joi from "joi";
+import gravatar from "gravatar";
 
 const validEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
@@ -24,6 +25,10 @@ const userSchema = new mongoose.Schema(
     token: {
       type: String,
       default: null,
+    },
+    avatarURL: {
+      type: String,
+      require: true,
     },
   },
   { versionKey: false, timestamps: true }
